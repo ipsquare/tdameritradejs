@@ -9,8 +9,9 @@ const fs = require('fs')
 const path = require('path')
 const axios = require('axios').default
 const querystring = require('querystring')
+const BASE = process.env.BASE || __dirname
 
-require('dotenv').config({ path: path.join(__dirname, '../.env') })
+require('dotenv').config({ path: path.join(BASE, '../.env') })
 
 // config
 const client_id = process.env.CLIENT_ID
@@ -18,8 +19,8 @@ const redirect_uri = process.env.REDIRECT_URI
 const port = redirect_uri.split(':')[2] || 80
 
 // ssl cert
-const key = fs.readFileSync(path.join(__dirname, '../selfsigned.key'))
-const cert = fs.readFileSync(path.join(__dirname, '../selfsigned.crt'))
+const key = fs.readFileSync(path.join(BASE, '../selfsigned.key'))
+const cert = fs.readFileSync(path.join(BASE, '../selfsigned.crt'))
 const options = { key: key, cert: cert }
 
 const app = express()
@@ -34,9 +35,10 @@ app.get('/', (req, res) => {
             redirect_uri: redirect_uri,
         }))
         .then(({ data }) => {
+            data.now = Date.now() / 1000
             res.send(data)
             console.info(JSON.stringify(data, null, 2))
-            fs.writeFileSync(path.join(__dirname, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
+            fs.writeFileSync(path.join(BASE, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
         })
         .catch(err => {
             res.send(JSON.stringify(err, null, 2))

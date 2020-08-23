@@ -6,13 +6,14 @@ const fs = require('fs')
 const path = require('path')
 const axios = require('axios').default
 const querystring = require('querystring')
+const BASE = process.env.BASE || __dirname
 
-require('dotenv').config({ path: path.join(__dirname, '../.env') })
+require('dotenv').config({ path: path.join(BASE, '../.env') })
 
 // config
 const client_id = process.env.CLIENT_ID
 
-const cacheFile = path.join(__dirname, 'accessToken.cache.json')
+const cacheFile = path.join(BASE, 'accessToken.cache.json')
 
 if (! fs.existsSync(cacheFile)) {
     console.error(`${cacheFile} does not exist. Please run 'npm run authorize' first.`)
@@ -29,8 +30,9 @@ axios
         client_id: `${client_id}@AMER.OAUTHAP`,
     }))
     .then(({ data }) => {
+        data.now = Date.now() / 1000
         console.info(JSON.stringify(data, null, 2))
-        fs.writeFileSync(path.join(__dirname, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
+        fs.writeFileSync(path.join(BASE, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
     })
     .catch(err => {
         console.error(JSON.stringify(err, null, 2))
