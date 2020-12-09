@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const axios = require('axios').default
 
-const cacheFile = path.join(__dirname, 'accessToken.cache.json')
+const cacheFile = path.join(__dirname, `accessToken${process.env.ALIAS && process.env.ALIAS}.cache.json`)
 
 if (! fs.existsSync(cacheFile)) {
     console.error(`${cacheFile} does not exist. Please run 'npm run authorize' first.`)

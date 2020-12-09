@@ -13,7 +13,8 @@ require('dotenv').config({ path: path.join(BASE, '../.env') })
 // config
 const client_id = process.env.CLIENT_ID
 
-const cacheFile = path.join(BASE, 'accessToken.cache.json')
+const cacheFileName = `accessToken${process.env.ALIAS && process.env.ALIAS}.cache.json`,
+    cacheFile = path.join(BASE, cacheFileName)
 
 if (! fs.existsSync(cacheFile)) {
     console.error(`${cacheFile} does not exist. Please run 'npm run authorize' first.`)
@@ -32,7 +33,7 @@ axios
     .then(({ data }) => {
         data.now = Date.now() / 1000
         console.info(JSON.stringify(data, null, 2))
-        fs.writeFileSync(path.join(BASE, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
+        fs.writeFileSync(cacheFile, JSON.stringify(data, null, 2))
     })
     .catch(err => {
         console.error(JSON.stringify(err, null, 2))

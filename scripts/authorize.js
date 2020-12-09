@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
             data.now = Date.now() / 1000
             res.send(data)
             console.info(JSON.stringify(data, null, 2))
-            fs.writeFileSync(path.join(BASE, 'accessToken.cache.json'), JSON.stringify(data, null, 2))
+            fs.writeFileSync(path.join(BASE, `accessToken${process.env.ALIAS && process.env.ALIAS}.cache.json`), JSON.stringify(data, null, 2))
         })
         .catch(err => {
             res.send(JSON.stringify(err, null, 2))
